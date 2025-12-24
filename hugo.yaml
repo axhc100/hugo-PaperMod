@@ -1,0 +1,25 @@
+baseURL: "https://hugo-paper-mod-wheat.vercel.app" # 这是您当前的Vercel预览网址
+title: "2025 Web3 Alpha 猎人" # 网站左上角标题
+theme: ["hugo-PaperMod"] # 必须与您的文件夹名称一致
+
+params:
+  env: production
+  description: "提供最快、最准的 Web3 空投交互指南与 Alpha 信息。"
+  defaultTheme: dark # 默认暗黑模式
+  
+  homeInfoParams:
+    Title: "发现下一个百倍空投 👋"
+    Content: "这里只关注高质量的链上机会。定期更新 L2 交互、质押方案与 AI 赛道潜力项目。"
+
+  socialIcons:
+    - name: x
+      url: "https://x.com/"
+    - name: telegram
+      url: "https://t.me/"
+
+menu:
+  main:
+    - identifier: posts
+      name: "交互指南"
+      url: /posts/
+      weight: 10
