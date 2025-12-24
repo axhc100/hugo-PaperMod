@@ -25,10 +25,12 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url)
             if feed.entries:
-                print(f"✅ 成功从 {url[:30]}... 获取到 {len(feed.entries)} 条资讯")
-                all_entries.extend(feed.entries[:3])
+                print(f"✅ 成功从源获取到数据: {feed.feed.get('title', '未知源')}")
+                for entry in feed.entries[:2]: # 每个源取最新的2条
+                    print(f"   - 发现资讯: {entry.title}")
+                    all_entries.append(entry)
         except Exception as e:
-            print(f"❌ 抓取源失败: {url[:30]}...")
+            print(f"❌ 抓取源失败 {url}: {e}")
     return all_entries
 
 def generate_article_with_gemini(news_title, news_content):
@@ -75,3 +77,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
