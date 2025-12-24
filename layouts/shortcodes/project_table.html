@@ -1,0 +1,34 @@
+<div class="project-table-container" style="overflow-x: auto;">
+    <table class="project-table" style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr style="background-color: var(--code-bg); text-align: left;">
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">项目名称</th>
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">融资额</th>
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">级别</th>
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">状态</th>
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">成本</th>
+                <th style="padding: 12px; border-bottom: 2px solid var(--border);">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Site.Data.projects }}
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px; font-weight: bold;">{{ .name }}</td>
+                <td style="padding: 12px; color: #e67e22; font-weight: bold;">{{ .financing }}</td>
+                <td style="padding: 12px;">
+                    <span style="background: var(--tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">
+                        {{ .tier }}
+                    </span>
+                </td>
+                <td style="padding: 12px;">{{ .status }}</td>
+                <td style="padding: 12px;">{{ .cost }}</td>
+                <td style="padding: 12px;">
+                    <a href="{{ .link }}" style="color: var(--primary); text-decoration: none; font-weight: bold;">
+                        查看教程 →
+                    </a>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
