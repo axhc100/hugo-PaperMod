@@ -1,0 +1,25 @@
+# data/projects.yml
+- name: "Berachain"
+  logo: "https://example.com/bera.png" # 可选
+  financing: "$42M"
+  status: "测试网"
+  tier: "T0"
+  difficulty: "中等"
+  cost: "0 撸"
+  link: "/posts/berachain-guide" # 指向你写的教程路径
+
+- name: "Monad"
+  financing: "$225M"
+  status: "即将开始"
+  tier: "T0"
+  difficulty: "高"
+  cost: "0 撸"
+  link: "#"
+
+- name: "Babylon"
+  financing: "$70M"
+  status: "主网质押"
+  tier: "T1"
+  difficulty: "低"
+  cost: "需资金"
+  link: "#"
