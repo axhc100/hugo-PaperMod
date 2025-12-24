@@ -7,10 +7,11 @@ import re
 
 # --- 你刚才截图的内容 ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# 建议替换为这些无需 RSSHub 转换的原生源
 RSS_URLS = [
-    "https://rsshub.app/foresightnews/column/7",
-    "https://rsshub.app/odaily/news/33",
-    "https://rsshub.app/theblockbeats/news"
+    "https://www.theblock.co/rss.xml",      # The Block (全球顶级，融资快讯最快)
+    "https://cryptopanic.com/news/rss/",   # CryptoPanic (全球实时资讯聚合)
+    "https://blockchain.news/rss"           # Blockchain News
 ]
 OUTPUT_DIR = "./content/posts"
 
@@ -72,4 +73,5 @@ def main():
             print(f"❌ Gemini 生成失败: {e}")
 
 if __name__ == "__main__":
+
     main()
