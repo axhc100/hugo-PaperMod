@@ -1,5 +1,5 @@
 baseURL: "https://hugo-paper-mod-wheat.vercel.app" # 这是您当前的Vercel预览网址
-title: "2025 Web3 Alpha 猎人" # 网站左上角标题
+title: "2026 Web3 Alpha 猎人" # 网站左上角标题
 
 params:
   env: production
