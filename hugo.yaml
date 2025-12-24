@@ -22,3 +22,9 @@ menu:
       name: "交互指南"
       url: /posts/
       weight: 10
+
+taxonomies:
+  category: categories
+  tag: tags
+  status: status  # 新增：项目状态（如：进行中、已快照、已发币）
+  tier: tiers    # 新增：项目等级（如：T0, T1, T2）
