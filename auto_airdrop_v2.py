@@ -1,22 +1,22 @@
 import os
 import feedparser
-from google import genai  # 注意：这里需要安装 google-genai 库
+import google.generativeai as genai  # 切换回更稳定的旧版库名，但功能一样
 from datetime import datetime
 import time
 import re
 
-# --- 你刚才截图的内容 ---
+# --- 配置区 ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-# 建议替换为这些无需 RSSHub 转换的原生源
 RSS_URLS = [
-    "https://www.theblock.co/rss.xml",      # The Block (全球顶级，融资快讯最快)
-    "https://cryptopanic.com/news/rss/",   # CryptoPanic (全球实时资讯聚合)
-    "https://blockchain.news/rss"           # Blockchain News
+    "https://www.theblock.co/rss.xml",
+    "https://cryptopanic.com/news/rss/",
+    "https://blockchain.news/rss"
 ]
 OUTPUT_DIR = "./content/posts"
 
-client = genai.Client(api_key=GEMINI_API_KEY)
-# ... 后面接之前的函数定义 (get_latest_news, generate_article_with_gemini, save_to_hugo, main)
+# 初始化 Gemini (使用最稳定的配置)
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 def get_latest_news():
     print("正在扫描 Web3 融资资讯源...")
@@ -25,10 +25,13 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url)
             if feed.entries:
-                print(f"✅ 成功从源获取到数据: {feed.feed.get('title', '未知源')}")
-                for entry in feed.entries[:2]: # 每个源取最新的2条
-                    print(f"   - 发现资讯: {entry.title}")
-                    all_entries.append(entry)
+                print(f"✅ 成功从源获取到数据: {url[:30]}...")
+                for entry in feed.entries[:2]:
+                    # 安全获取标题和摘要
+                    title = entry.get('title', '无标题')
+                    # 修复关键：兼容不同 RSS 的摘要字段
+                    summary = entry.get('summary', entry.get('description', '点击查看详情'))
+                    all_entries.append({'title': title, 'summary': summary})
         except Exception as e:
             print(f"❌ 抓取源失败 {url}: {e}")
     return all_entries
@@ -36,22 +39,26 @@ def get_latest_news():
 def generate_article_with_gemini(news_title, news_content):
     prompt = f"""
     你是一个 Web3 领域的 Alpha 猎人。请根据以下新闻内容，为我的 Hugo 博客撰写一篇高质量的交互指南。
+
     新闻标题: {news_title}
     新闻摘要: {news_content}
-    要求：必须包含 YAML 头部，包含 title, date, tags, categories, tier(T0/T1/T2), status 字段。
-    正文需包含项目简介、融资详情、交互建议、风险提示。仅输出内容，不带解释。
+
+    要求：
+    1. 必须包含 YAML 头部，包含 title, date, tags, categories, tier(T0/T1/T2), status 字段。
+    2. 文章正文需包含项目简介、融资详情、交互建议、风险提示。
+    3. 仅输出 Markdown 内容，不要任何解释。
     """
     
     print(f"🚀 正在为 [{news_title[:15]}...] 召唤 Gemini 生成文章...")
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt
-    )
+    # 修复关键：使用更稳健的调用方式
+    response = model.generate_content(prompt)
     return response.text
 
 def save_to_hugo(content, title):
-    if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
-    safe_title = "".join(x for x in title if x.isalnum())[:30]
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+    # 处理文件名
+    safe_title = "".join(x for x in title if x.isalnum() or x==' ')[:30].replace(' ', '-')
     filename = f"{datetime.now().strftime('%Y%m%d')}-{safe_title}.md"
     filepath = os.path.join(OUTPUT_DIR, filename)
     with open(filepath, "w", encoding="utf-8") as f:
@@ -59,22 +66,19 @@ def save_to_hugo(content, title):
     print(f"✨ 已生成文件: {filepath}")
 
 def main():
-    news_list = get_latest_news()
-    if not news_list:
-        print("💡 依然没拿到消息？尝试以下测试步骤：")
-        print("1. 检查电脑是否能打开 https://rsshub.app")
-        print("2. 确认 RSS_URLS 里的链接在浏览器里能否看到文字内容")
+    if not GEMINI_API_KEY:
+        print("❌ 错误: 未找到 GEMINI_API_KEY 环境变量")
         return
 
+    news_list = get_latest_news()
     for news in news_list:
         try:
-            article = generate_article_with_gemini(news.title, news.summary)
-            save_to_hugo(article, news.title)
+            # 修复关键：使用字典取值
+            article = generate_article_with_gemini(news['title'], news['summary'])
+            save_to_hugo(article, news['title'])
             time.sleep(2)
         except Exception as e:
             print(f"❌ Gemini 生成失败: {e}")
 
 if __name__ == "__main__":
-
     main()
-
