@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install google-generativeai feedparser
+          pip install google-genai feedparser
 
       - name: Run Auto Script
         env:
