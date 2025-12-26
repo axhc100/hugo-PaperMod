@@ -15,7 +15,7 @@ RSS_URLS = [
 OUTPUT_DIR = "./content/posts"
 
 # 2025年最推荐的 Flash 模型
-MODEL_ID = 'models/gemini-1.5-flash-8b' 
+MODEL_ID = 'gemini-3-flash' 
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -107,6 +107,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
